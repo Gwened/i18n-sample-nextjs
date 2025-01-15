@@ -1,5 +1,5 @@
 import getLocaleFromHeaders from "@/utils/currentLocale.server";
-import Acknowledge from "./Acknowledge-dynamic";
+import Acknowledge from "./Acknowledge";
 import getTexts from "@/utils/getTexts";
 
 // This is a React Server Component

@@ -7,8 +7,9 @@ export function makePrefixedLocalePathnames(pathname: string): {[lg in Supported
     
     let res: {[lg in SupportedLocale]: string} = {} as any;
     for (const locale of i18nConfig.locales) {
+        res[locale] = "toto"
       if (existingLocaleInURL !== null) {
-        res[locale] = pathname.replace(`/${existingLocaleInURL}`, '');
+        res[locale] = pathname.replace(`/${existingLocaleInURL}`, `/${locale}`);
       } else {
         res[locale] = `/${locale}${pathname}`;
       }

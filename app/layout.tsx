@@ -15,7 +15,6 @@ export async function generateMetadata(_: any, state: any) {
     .find((state) => state?.hasOwnProperty("url"))?.url?.pathname)
     ?? "";
 
-  console.log({pathname})
   const altPathnames = makePrefixedLocalePathnames(pathname);
   const locale = await getLocaleFromHeaders();
 
