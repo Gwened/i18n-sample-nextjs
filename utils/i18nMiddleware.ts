@@ -18,11 +18,13 @@ export default function i18nMiddleware(request: NextRequest, response: NextRespo
   
     // Is the locale in the URL prefix?
     let locale = getLocaleInURLPrefix(request.nextUrl.pathname, locales) as string|null;
+    let isLocaleInURL = false;
   
     if (locale !== null) {
         // Map to our app folder structure
         const newPathPrefix = (request.nextUrl.pathname.length === 3) ? "/" : "";
         response = NextResponse.rewrite(new URL(request.nextUrl.pathname.replace(`/${locale}`, newPathPrefix), request.url), response);
+        isLocaleInURL = true;
     } else {
         // Here: we could also get a value from the cookies, in order to let the user set their preference
         // independently from the preferences set in the browser settings
@@ -43,6 +45,7 @@ export default function i18nMiddleware(request: NextRequest, response: NextRespo
         }
     }
     response.headers.set('Content-Language', locale);
-    addToHeader(response, 'Vary', 'Content-Language');
+    if (!isLocaleInURL)
+      addToHeader(response, 'Vary', 'Content-Language');
     return response;
   }
