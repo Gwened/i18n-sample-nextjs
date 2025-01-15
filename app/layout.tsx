@@ -1,52 +1,38 @@
 import "./globals.css";
 import getTexts from "@/utils/getTexts";
 import Providers from "./providers";
-import makeSiteUrl, { makePrefixedLocalePathnames } from "@/utils/site-url";
-//import getLocaleFromHeaders from "@/utils/currentLocale.server";
 import { i18nConfig, SupportedLocale } from "@/i18nConfig";
-import getLocaleFromHeaders from "@/utils/currentLocale.server";
+import getLocaleFromParams from "@/utils/currentLocale";
 
-// eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export async function generateMetadata(_: any, state: any) {
-  // Hack from https://github.com/vercel/next.js/discussions/50189 to get the pathname.
-  // Warning: doesn't seem to work with static generation
-  const pathname = (Object.getOwnPropertySymbols(state) 
-    .map((item) => state[item])
-    .find((state) => state?.hasOwnProperty("url"))?.url?.pathname)
-    ?? "";
-
-  console.log({pathname})
-  const altPathnames = makePrefixedLocalePathnames(pathname);
-  const locale = await getLocaleFromHeaders();
-
+export async function generateMetadata() {
   return {
     title: "i18n Sample",
     alternates: {
-      canonical: makeSiteUrl(altPathnames[locale]),
+      // Note: here, alternate URLs are wrong, because they only points to the root URL, not the current one.
+      // There are hacks to get the pathname, but it seems it requires the pages to be dynamic
+      // See https://github.com/vercel/next.js/discussions/50189
       languages: Object.fromEntries(
-        i18nConfig.locales.map(locale => [locale, makeSiteUrl(altPathnames[locale])])
+        i18nConfig.locales.map(locale => [locale, `/${locale}`])
       ) as Record<SupportedLocale, string>,
-    },
-    other: {
-      "og:locale:alternate": i18nConfig.locales
     }
   };
 }
 
 export default async function RootLayout({
-  children,
+  children, params
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode,
+  params: Promise<{locale: string}> // note: locale is not passed here!! See https://github.com/vercel/next.js/discussions/49507
 }>) {
-  const locale = await getLocaleFromHeaders();
-  const texts = await getTexts(locale);
+  //const locale = getLocaleFromParams(await params); // not possible!
+  //const texts = await getTexts(locale);
 
   return (
-    <html lang={locale}>
+    <html /*lang={locale}*/>
       <body>
-        <Providers {...{ locale, texts }}>
+        {/*<Providers {...{ locale, texts }}>*/}
           {children}
-        </Providers>
+        {/*</Providers>*/}
       </body>
     </html>
   );
