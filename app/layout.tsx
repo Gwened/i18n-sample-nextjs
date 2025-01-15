@@ -21,10 +21,11 @@ export async function generateMetadata(_: any, state: any) {
   return {
     title: "i18n Sample",
     alternates: {
-      canonical: makeSiteUrl(altPathnames[locale]),
-      languages: Object.fromEntries(
-        i18nConfig.locales.map(locale => [locale, makeSiteUrl(altPathnames[locale])])
-      ) as Record<SupportedLocale, string>,
+      canonical: makeSiteUrl(altPathnames[locale]).replace(`/${locale}`, ""),
+      languages: // generates <link rel="alternate" hreflang="{locale}" href="http://localhost:3000/{locale}/hello">
+        Object.fromEntries(
+          i18nConfig.locales.map(locale => [locale, makeSiteUrl(altPathnames[locale])])
+        ) as Record<SupportedLocale, string>,
     },
     other: {
       "og:locale:alternate": i18nConfig.locales
