@@ -1,5 +1,5 @@
 // From next-i18n-router
-import { i18nConfig, SupportedLocale } from '@/i18nConfig';
+import { i18nConfig, type SupportedLocale } from '@/i18nConfig';
 import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 

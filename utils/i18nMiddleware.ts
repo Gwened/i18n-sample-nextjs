@@ -1,4 +1,4 @@
-import { i18nConfig, SupportedLocale } from "@/i18nConfig";
+import { i18nConfig, type SupportedLocale } from "@/i18nConfig";
 import { NextRequest, NextResponse } from "next/server";
 import localeDetector from "./localeDetector";
 import { addToHeader } from "@/middleware";
@@ -44,7 +44,7 @@ export default function i18nMiddleware(request: NextRequest, response: NextRespo
           locale = defaultLocale;
         }
     }
-    response.headers.set('Content-Language', locale);
+    response.headers.set('Content-Language', locale!);
     if (!isLocaleInURL)
       addToHeader(response, 'Vary', 'Content-Language');
     return response;

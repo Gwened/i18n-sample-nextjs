@@ -3,7 +3,7 @@ import getTexts from "@/utils/getTexts";
 import Providers from "./providers";
 import makeSiteUrl, { makePrefixedLocalePathnames } from "@/utils/site-url";
 //import getLocaleFromHeaders from "@/utils/currentLocale.server";
-import { i18nConfig, SupportedLocale } from "@/i18nConfig";
+import { i18nConfig, type SupportedLocale } from "@/i18nConfig";
 import getLocaleFromHeaders from "@/utils/currentLocale.server";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -12,7 +12,8 @@ export async function generateMetadata(_: any, state: any) {
   // Warning: doesn't seem to work with static generation
   const pathname = (Object.getOwnPropertySymbols(state) 
     .map((item) => state[item])
-    .find((state) => state?.hasOwnProperty("url"))?.url?.pathname)
+    //.find((state) => state?.hasOwnProperty("urlPathname"))?.urlPathname?.replace(/\?.+/, "")) // Next.js 14
+    .find((state) => state?.hasOwnProperty("url"))?.url?.pathname) // Next.js 15
     ?? "";
 
   const altPathnames = makePrefixedLocalePathnames(pathname);
@@ -22,7 +23,7 @@ export async function generateMetadata(_: any, state: any) {
     title: "i18n Sample",
     alternates: {
       canonical: makeSiteUrl(altPathnames[locale]).replace(`/${locale}`, ""),
-      languages: // generates <link rel="alternate" hreflang="{locale}" href="http://localhost:3000/{locale}/hello">
+      languages: // generates <link rel="alternate" hreflang="{locale}" href="http://localhost:3000/{locale}/...">
         Object.fromEntries(
           i18nConfig.locales.map(locale => [locale, makeSiteUrl(altPathnames[locale])])
         ) as Record<SupportedLocale, string>,
